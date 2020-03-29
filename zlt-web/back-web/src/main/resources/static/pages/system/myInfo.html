@@ -57,10 +57,9 @@
         form.render('radio');
 
         admin.req('api-user/users/current', {}, function (data) {
-            var user = data;
             // 回显user数据
-            $('#user-form').attr('method', 'PUT');
-            if (user) {
+            if (data && data.resp_code === 0) {
+                let user = data.datas;
                 user.sex = user.sex.toString();
                 form.val('user-form', user);
                 $('#user-form').attr('method', 'PUT');
@@ -90,9 +89,9 @@
             url:  config.base_server + 'api-file/files-anon',
             accept: 'file' ,
             auto: true ,
+            headers: {"Authorization" : "Bearer " + config.getToken().access_token},
             before: function(obj){
                 layer.load(); //上传loading
-                this.data={access_token:config.getToken().access_token};
                 //预读本地文件示例，不支持ie8
                 obj.preview(function (index, file, result) {
                     $(".layui-upload-img").remove();

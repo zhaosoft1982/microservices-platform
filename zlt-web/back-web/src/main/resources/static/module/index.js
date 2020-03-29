@@ -188,20 +188,17 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
         // 从服务器获取登录用户的信息
         getUser: function (success) {
             layer.load(2);
-            // admin.req('userInfo.json', {}, function (data) {
             admin.req('api-user/users/current', {}, function (data) {
                 layer.closeAll('loading');
-                if (data) {
-                    var user = data;
+                if (data && data.resp_code === 0) {
+                    let user = data.datas;
                     config.putUser(user);
                     admin.putTempData("permissions",user.permissions);
                     success(user);
                 } else {
                     layer.msg('获取用户失败', {icon: 2});
-                    //add by owen 登录失败重定向到登录页
                     config.removeToken();
                     location.replace('login.html');
-                    return ;
                 }
             }, 'GET');
         },
@@ -216,11 +213,13 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
             // 退出登录
             $('#btnLogout').click(function () {
                 layer.confirm('确定退出登录？', function () {
-                    //通过认证中心 tuic
-                    admin.req('api-uaa/oauth/remove/token', {}, function (data) {
-                            config.removeToken();
-                            location.replace('login.html');
-                    }, 'POST');
+                    let token = config.getToken();
+                    let accessToken;
+                    if (token) {
+                        accessToken = token.access_token;
+                    }
+                    config.removeToken();
+                    window.location = config.base_server + 'api-uaa/oauth/remove/token?redirect_uri=http://127.0.0.1:8066/login.html&access_token='+accessToken;
                 });
             });
             // 修改密码

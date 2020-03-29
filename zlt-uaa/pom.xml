@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.zlt</groupId>
 		<artifactId>central-platform</artifactId>
-		<version>2.1.0</version>
+		<version>3.4.0</version>
 	</parent>
 	<artifactId>zlt-uaa</artifactId>
 	<description>认证中心</description>
@@ -12,6 +12,10 @@
 		<dependency>
 			<groupId>com.zlt</groupId>
 			<artifactId>zlt-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.zlt</groupId>
+			<artifactId>zlt-common-spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.zlt</groupId>
@@ -33,9 +37,13 @@
 			<groupId>com.zlt</groupId>
 			<artifactId>zlt-sentinel-spring-boot-starter</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.zlt</groupId>
+			<artifactId>zlt-redis-spring-boot-starter</artifactId>
+		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
+			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
 		</dependency>
 		<dependency>
@@ -50,10 +58,10 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
-		<!-- kaptcha 验证码生成工具 -->
+		<!-- 验证码生成工具 -->
 		<dependency>
-			<groupId>com.github.axet</groupId>
-			<artifactId>kaptcha</artifactId>
+			<groupId>com.github.whvcse</groupId>
+			<artifactId>easy-captcha</artifactId>
 		</dependency>
 
 		<dependency>

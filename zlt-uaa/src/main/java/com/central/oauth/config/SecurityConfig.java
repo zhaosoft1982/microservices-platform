@@ -1,12 +1,11 @@
 package com.central.oauth.config;
 
 import com.central.common.constant.SecurityConstants;
+import com.central.oauth.handler.OauthLogoutSuccessHandler;
 import com.central.oauth.mobile.MobileAuthenticationSecurityConfig;
 import com.central.oauth.openid.OpenIdAuthenticationSecurityConfig;
 import com.central.common.config.DefaultPasswordConfig;
-import com.central.oauth2.common.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -32,7 +31,6 @@ import javax.annotation.Resource;
  * @author zlt
  */
 @Configuration
-@EnableConfigurationProperties(SecurityProperties.class)
 @Import(DefaultPasswordConfig.class)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -52,9 +50,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Resource
 	private LogoutHandler oauthLogoutHandler;
-
-	@Autowired
-	private SecurityProperties securityProperties;
 
 	@Autowired
 	private ValidateCodeSecurityConfig validateCodeSecurityConfig;
@@ -78,9 +73,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-                    .antMatchers( securityProperties.getIgnore().getUrls())
+					.anyRequest()
+					//授权服务器关闭basic认证
                     .permitAll()
-                    .anyRequest().authenticated()
                     .and()
                 .formLogin()
                     .loginPage(SecurityConstants.LOGIN_PAGE)
@@ -90,8 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
 				.logout()
 					.logoutUrl(SecurityConstants.LOGOUT_URL)
-					.logoutSuccessUrl(SecurityConstants.LOGIN_PAGE)
-					.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
+					.logoutSuccessHandler(new OauthLogoutSuccessHandler())
 					.addLogoutHandler(oauthLogoutHandler)
 					.clearAuthentication(true)
 					.and()

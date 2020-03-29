@@ -102,8 +102,12 @@ layui.define(['config', 'layer'], function (exports) {
                     if (!noHeaderToken) {
                         let token = config.getToken();
                         if (token) {
-                            xhr.setRequestHeader('Authorization', 'bearer ' + token.access_token);
+                            xhr.setRequestHeader('Authorization', 'Bearer ' + token.access_token);
                         }
+                    }
+                    let isolationVersion = config.isolationVersion;
+                    if (isolationVersion) {
+                        xhr.setRequestHeader('z-l-t-version', isolationVersion);
                     }
                 }
             });
@@ -148,7 +152,7 @@ layui.define(['config', 'layer'], function (exports) {
             var permissions = admin.getTempData("permissions");
             if (permissions){
                 for (var i = 0; i < permissions.length; i++) {
-                    if (auth == permissions[i].permission) {
+                    if (auth == permissions[i]) {
                         return true;
                     }
                 }

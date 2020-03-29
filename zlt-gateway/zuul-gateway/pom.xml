@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.zlt</groupId>
         <artifactId>zlt-gateway</artifactId>
-        <version>2.1.0</version>
+        <version>3.4.0</version>
     </parent>
     <artifactId>zuul-gateway</artifactId>
     <description>zuul网关</description>
@@ -27,11 +27,20 @@
             <groupId>com.zlt</groupId>
             <artifactId>zlt-sentinel-spring-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.zlt</groupId>
+            <artifactId>zlt-redis-spring-boot-starter</artifactId>
+        </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
+        <!--<dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+        </dependency>-->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -59,7 +68,7 @@
         </dependency>
         <!-- swagger -->
         <dependency>
-            <groupId>com.didispace</groupId>
+            <groupId>com.github.zlt2000</groupId>
             <artifactId>swagger-butler-core</artifactId>
         </dependency>
 
@@ -94,6 +103,11 @@
         <dependency>
             <groupId>eu.bitwalker</groupId>
             <artifactId>UserAgentUtils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

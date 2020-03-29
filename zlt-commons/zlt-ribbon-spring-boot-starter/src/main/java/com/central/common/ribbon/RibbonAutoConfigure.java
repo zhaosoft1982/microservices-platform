@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
  * @date 2018/11/17 9:24
  */
 @EnableConfigurationProperties(RestTemplateProperties.class)
-public class RibbonAutoConfigure  {
+public class RibbonAutoConfigure {
     @Bean
     public DefaultPropertiesFactory defaultPropertiesFactory() {
         return new DefaultPropertiesFactory();

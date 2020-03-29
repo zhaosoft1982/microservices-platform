@@ -1,7 +1,10 @@
 package com.central.oauth2.common.store;
 
 import cn.hutool.core.util.StrUtil;
+import com.central.common.constant.SecurityConstants;
+import com.central.oauth2.common.converter.CustomUserAuthenticationConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
@@ -9,6 +12,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
@@ -27,9 +31,8 @@ import java.util.stream.Collectors;
  * @author zlt
  * @date 2018/8/20 9:25
  */
+@ConditionalOnProperty(prefix = "zlt.oauth2.token.store", name = "type", havingValue = "resJwt")
 public class ResJwtTokenStore {
-    private static final String PUBLIC_KEY = "pubkey.txt";
-
     @Autowired
     private ResourceServerProperties resource;
 
@@ -42,6 +45,8 @@ public class ResJwtTokenStore {
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         converter.setVerifierKey(getPubKey());
+        DefaultAccessTokenConverter tokenConverter = (DefaultAccessTokenConverter)converter.getAccessTokenConverter();
+        tokenConverter.setUserTokenConverter(new CustomUserAuthenticationConverter());
         return converter;
     }
 
@@ -50,7 +55,7 @@ public class ResJwtTokenStore {
      * @return 公钥 Key
      */
     private String getPubKey() {
-        Resource res = new ClassPathResource(ResJwtTokenStore.PUBLIC_KEY);
+        Resource res = new ClassPathResource(SecurityConstants.RSA_PUBLIC_KEY);
         try (BufferedReader br = new BufferedReader(new InputStreamReader(res.getInputStream()))) {
             return br.lines().collect(Collectors.joining("\n"));
         } catch (IOException ioe) {

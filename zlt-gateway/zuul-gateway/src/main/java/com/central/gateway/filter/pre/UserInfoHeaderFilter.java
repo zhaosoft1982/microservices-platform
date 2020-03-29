@@ -2,6 +2,7 @@ package com.central.gateway.filter.pre;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.central.common.constant.SecurityConstants;
+import com.central.common.model.SysUser;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
@@ -40,14 +41,17 @@ public class UserInfoHeaderFilter extends ZuulFilter {
     public Object run() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
-            String username = authentication.getName();
-
+            Object principal = authentication.getPrincipal();
+            RequestContext ctx = RequestContext.getCurrentContext();
+            //客户端模式只返回一个clientId
+            if (principal instanceof SysUser) {
+                SysUser user = (SysUser)authentication.getPrincipal();
+                ctx.addZuulRequestHeader(SecurityConstants.USER_ID_HEADER, String.valueOf(user.getId()));
+                ctx.addZuulRequestHeader(SecurityConstants.USER_HEADER, user.getUsername());
+            }
             OAuth2Authentication oauth2Authentication = (OAuth2Authentication)authentication;
             String clientId = oauth2Authentication.getOAuth2Request().getClientId();
-
-            RequestContext ctx = RequestContext.getCurrentContext();
-            ctx.addZuulRequestHeader(SecurityConstants.USER_HEADER, username);
-            ctx.addZuulRequestHeader(SecurityConstants.CLIENT_HEADER, clientId);
+            ctx.addZuulRequestHeader(SecurityConstants.TENANT_HEADER, clientId);
             ctx.addZuulRequestHeader(SecurityConstants.ROLE_HEADER, CollectionUtil.join(authentication.getAuthorities(), ","));
         }
         return null;
